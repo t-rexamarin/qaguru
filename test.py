@@ -43,9 +43,7 @@ for subject in subjects:
 # Hobbies
 hobbies = ('Sports', 'Reading', 'Music')
 for hobby in hobbies:
-    browser.element(
-        by.xpath(f'//label[text() = "{hobby}"]')
-    ).click()
+    browser.element(by.xpath(f'//label[text() = "{hobby}"]')).click()
 
 # Picture
 picture_name = 'Гигачад.jpg'
@@ -70,7 +68,6 @@ browser.element('.modal-title').should(have.text('Thanks for submitting the form
 browser.element(by.xpath(student_name_submitted.selector)).should(have.text(f'{first_name} {last_name}'))
 browser.element(by.xpath(student_email_submitted.selector)).should(have.text(email))
 browser.element(by.xpath(student_gender_submitted.selector)).should(have.text(gender))
-browser.element(by.xpath(student_mobile_submitted.selector)).should(have.text(phone))
 browser.element(by.xpath(student_mobile_submitted.selector)).should(have.text(phone))
 browser.element(by.xpath(student_date_of_birth_submitted.selector))\
     .should(have.text(f'{birthday_day} {birthday_month},{birthday_year}'))
