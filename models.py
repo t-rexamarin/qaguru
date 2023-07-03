@@ -111,31 +111,3 @@ class Cart:
                 raise e
             else:
                 self.clear()
-
-
-if __name__ == '__main__':
-    prod_1 = Product(
-        name='prod_1',
-        price=100,
-        description='prod_1 desc',
-        quantity=10
-    )
-    prod_2 = Product(
-        name='prod_2',
-        price=100,
-        description='prod_2 desc',
-        quantity=10
-    )
-    cart = Cart()
-    # cart.products[prod_1] = 1
-    # cart.products[prod_2] = 2
-    cart.add_product(product=prod_1)
-    cart.add_product(product=prod_1)
-    cart.add_product(product=prod_2, buy_count=3)
-    total_price = cart.get_total_price()
-    cart.buy()
-    print(cart)
-    # cart.remove_product(product=prod_2)
-    # print(cart)
-    # cart.remove_product(product=prod_2, remove_count=1)
-    # print(cart)
