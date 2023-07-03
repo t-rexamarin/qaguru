@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from homework.models import Product, Cart
+from models import Product, Cart
 
 
 @pytest.fixture(scope='function')
@@ -76,41 +76,34 @@ class TestCart:
         На некоторые методы у вас может быть несколько тестов.
         Например, негативные тесты, ожидающие ошибку (используйте pytest.raises, чтобы проверить это)
     """
-
-    @pytest.fixture(scope='function', params=[product_1, 1, product_2, 1])
-    def cart_with_products(
-            self,
-            product_1: Product = product_1,
-            product_1_quantity: int = 1,
-            product_2: Product = product_2,
-            product_2_quantity: int = 1,
-    ) -> CartWithProducts:
+    @pytest.fixture(scope='function')
+    def empty_cart(self) -> Cart:
         cart = Cart()
-        cart.add_product(product=product_1, buy_count=product_1_quantity)
-        cart.add_product(product=product_2, buy_count=product_2_quantity)
-        fixture = CartWithProducts(
-            cart=cart,
-            product_1=product_1,
-            product_2=product_2
-        )
-        return fixture
-
-    def test_add_products_to_cart(self, cart_with_products):
-        assert cart_with_products.cart.products[cart_with_products.product_1] == 10
-        assert cart_with_products.cart.products[cart_with_products.product_1] == 20
-
-    # @pytest.mark.parametrize(
-    #     'expected_sum', [200, 10000, 20000]
-    # )
-    # def test_products_cart_sum(self, cart_with_products, expected_sum):
-    #     total_sum = cart_with_products.cart.get_total_price()
-    #     assert total_sum == expected_sum
+        return cart
 
     @pytest.mark.parametrize(
-        'cart_with_products', [
-            pytest.lazy_fixture('product_1'), 10, pytest.lazy_fixture('product_2'), 20
-        ], indirect=True
+        'product_quantity, expected_result', [(1, 1), (5, 5)]
     )
-    def test_products_cart_sum(self, cart_with_products):
-        total_sum = cart_with_products.cart.get_total_price()
-        assert total_sum == 20000
+    def test_add_products_to_cart(self, empty_cart, product_1, product_quantity, expected_result):
+        empty_cart.add_product(product=product_1, buy_count=product_quantity)
+        assert empty_cart.products[product_1] == expected_result
+
+    @pytest.mark.parametrize(
+        'product_1_quantity, product_2_quantity, total_sum',
+        [
+            (1, 2, 300), (2, 4, 600)
+        ]
+    )
+    def test_products_cart_sum(
+            self,
+            empty_cart,
+            product_1,
+            product_2,
+            product_1_quantity,
+            product_2_quantity,
+            total_sum
+    ):
+        empty_cart.add_product(product=product_1, buy_count=product_1_quantity)
+        empty_cart.add_product(product=product_2, buy_count=product_2_quantity)
+        _sum = empty_cart.get_total_price()
+        assert _sum == total_sum
