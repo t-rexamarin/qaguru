@@ -6,18 +6,13 @@ on:
       - "master"
 
 jobs:
-  chromedriver:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: browser-actions/setup-chrome@v1
-      - run: chrome --version
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Set up chrome
         uses: browser-actions/setup-chrome@v1
-        run: chrome --version
+      - run: chrome --version
 
       - uses: actions/checkout@v2
       - name: Set up Python 3.x
