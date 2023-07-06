@@ -1,9 +1,10 @@
+import allure
 from selene.support import by
 from selene.support.conditions import be
-from selene.support.shared import browser
 from selene.support.shared.jquery_style import s
 
 
+@allure.story("Находим в репозитории issue с номером 76")
 def test_github(driver):
     driver.open("https://github.com")
 
