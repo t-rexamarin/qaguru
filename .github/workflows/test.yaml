@@ -10,24 +10,6 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - name: Prepare Selenium
-        run: |
-          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          echo "deb http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee -a /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update -qqy
-          sudo apt-get -qqy install google-chrome-stable
-          CHROME_VERSION=$(google-chrome-stable --version)
-          CHROME_FULL_VERSION=${CHROME_VERSION%%.*}
-          CHROME_MAJOR_VERSION=${CHROME_FULL_VERSION//[!0-9]}
-          sudo rm /etc/apt/sources.list.d/google-chrome.list
-          export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION%%.*}`
-          curl -L -O "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip && chmod +x chromedriver && sudo mv chromedriver /usr/local/bin
-          export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION%%.*}`
-          curl -L -O "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip && chmod +x chromedriver && sudo mv chromedriver /usr/local/bin
-          chromedriver -version
-
       - uses: actions/checkout@v2
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
@@ -36,7 +18,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-      - name: Install dependencies
+      - name: Install xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install xvfb
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+      - name: Run tests
         run: |
           pytest --alluredir=allure-results
 
