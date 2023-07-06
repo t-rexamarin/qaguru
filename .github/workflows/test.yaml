@@ -10,9 +10,9 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - name: Set up chrome
-        uses: browser-actions/setup-chrome@v1
-      - run: chrome --version
+      - name: Prepare Selenium
+        # https://github.com/marketplace/actions/setup-chromedriver
+        uses: nanasess/setup-chromedriver@master
 
       - uses: actions/checkout@v2
       - name: Set up Python 3.x
