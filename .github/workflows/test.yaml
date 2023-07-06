@@ -3,7 +3,7 @@ name: Test
 on:
   push:
     branches:
-      - "main"
+      - "lesson-9"
 jobs:
   test:
     name: Test
