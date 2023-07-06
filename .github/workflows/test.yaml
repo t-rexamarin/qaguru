@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Install chrome
         uses: browser-actions/setup-chrome@v1
-        run: chrome --version
+      - run: chrome --version
       - uses: actions/checkout@v2
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
