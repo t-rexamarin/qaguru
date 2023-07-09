@@ -10,6 +10,5 @@ def driver():
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
     browser.config.driver_options = options
-    browser.config.driver.maximize_window()
     yield browser
     browser.quit()
