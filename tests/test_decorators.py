@@ -10,7 +10,6 @@ from selene.support.shared.jquery_style import s
 @allure.label("owner", "t-rexamarin")
 @allure.feature("Задачи в репозитории")
 @allure.story("Авторизованный пользователь может создать задачу в репозитории")
-@allure.link("https://github.com", name="Testing")
 def test_decorator_steps():
     open_main_page()
     search_for_repository("eroshenkoam/allure-example")
