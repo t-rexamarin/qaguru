@@ -1,7 +1,6 @@
 import pytest
 from selene import browser, Browser
-
-from demo_qa.user_class import User
+from qaguru.user import User
 
 
 @pytest.fixture(scope='function', autouse=True)
@@ -12,7 +11,7 @@ def browser_setup() -> Browser:
 
 
 @pytest.fixture(scope='function')
-def user_data() -> User:
+def user_data():
     user = User(
         first_name='Имя',
         last_name='Фамилия',

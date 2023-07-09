@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import os
 from typing import Tuple
 
@@ -80,7 +79,7 @@ class PracticeForm:
             browser.element(by.xpath(f'//label[text() = "{hobby}"]')).click()
         return self
 
-    def select_picture(self, picture_name: str):
+    def select_picture(self, picture_name: str) -> PracticeForm:
         """
         Заполняет поле Picture.
         """
@@ -93,14 +92,14 @@ class PracticeForm:
         else:
             raise ValueError(f'{user_picture_path} отсутствует')
 
-    def type_address(self, address: str):
+    def type_address(self, address: str) -> PracticeForm:
         """
         Заполняет поле Current Address.
         """
         browser.element(by.id('currentAddress')).should(be.blank).type(address)
         return self
 
-    def select_state_and_city(self, state: str, city: str):
+    def select_state_and_city(self, state: str, city: str) -> PracticeForm:
         """
         Заполняет поля State и City.
         """
@@ -108,7 +107,7 @@ class PracticeForm:
         browser.element(by.xpath('//div[@id = "city"]//input')).send_keys(city).press_tab()
         return self
 
-    def submit(self):
+    def submit(self) -> PracticeForm:
         browser.element(by.id('submit')).click()
         return self
 
@@ -128,7 +127,7 @@ class PracticeForm:
             address: str,
             state: str,
             city: str
-    ):
+    ) -> None:
         browser.element('.table').all('td').even.should(
             have.exact_texts(
                 f'{first_name} {last_name}',
