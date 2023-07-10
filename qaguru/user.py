@@ -1,5 +1,13 @@
+import datetime
 from dataclasses import dataclass
+from enum import Enum
 from typing import Tuple
+
+
+class Hobbies(Enum):
+    SPORT = 'Sports'
+    READING = 'Reading'
+    MUSIC = 'Music'
 
 
 @dataclass
@@ -12,11 +20,9 @@ class User:
     email: str
     gender: str
     phone: str
-    day_of_birth: str
-    month_of_birth: str
-    year_of_birth: str
+    date_of_birth: datetime.date
     subjects_list: Tuple[str, ...]
-    hobbies_list: Tuple[str, ...]
+    hobbies_list: Tuple[Hobbies, ...]
     picture_name: str
     address: str
     state: str

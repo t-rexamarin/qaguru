@@ -1,6 +1,8 @@
+import datetime
+
 import pytest
 from selene import browser, Browser
-from qaguru.user import User
+from qaguru.user import User, Hobbies
 
 
 @pytest.fixture(scope='function', autouse=True)
@@ -18,11 +20,9 @@ def user_data():
         email='name@example.com',
         gender='Male',
         phone='7999555663',
-        day_of_birth='07',
-        month_of_birth='March',
-        year_of_birth='1991',
+        date_of_birth=datetime.date(year=1991, month=3, day=7),
         subjects_list=('Arts', 'History', 'Biology'),
-        hobbies_list=('Sports', 'Reading', 'Music'),
+        hobbies_list=(Hobbies.SPORT.value, Hobbies.READING.value, Hobbies.MUSIC.value),
         picture_name='Гигачад.jpg',
         address='Тестовая улица 1',
         state='NCR',

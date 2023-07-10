@@ -1,8 +1,12 @@
 from __future__ import annotations
+
+import datetime
 import os
 from typing import Tuple
 
 from selene import browser, by, have, be
+
+from qaguru.user import User, Hobbies
 
 
 class PracticeForm:
@@ -14,55 +18,75 @@ class PracticeForm:
         browser.element(by.class_name('main-header')).should(have.text('Practice Form'))
         return self
 
-    def type_first_name(self, first_name: str) -> PracticeForm:
+    def register(self, user: User) -> PracticeForm:
+        """
+        Вызывает цепочку методов заполнения формы регистрации.
+        """
+        self._type_first_name(first_name=user.first_name)\
+            ._type_last_name(last_name=user.last_name)\
+            ._type_email(email=user.email)\
+            ._click_gender(gender=user.gender)\
+            ._type_mobile(phone=user.phone)\
+            ._set_date_of_birth(day_of_birth=user.date_of_birth)\
+            ._type_subjects(subjects_list=user.subjects_list)\
+            ._type_hobbies(hobbies_list=user.hobbies_list)\
+            ._select_picture(picture_name=user.picture_name)\
+            ._type_address(address=user.address)\
+            ._select_state_and_city(state=user.state, city=user.city)\
+            ._submit()
+        return self
+
+    def _type_first_name(self, first_name: str) -> PracticeForm:
         """
         Заполняет поле Name -> First Name.
         """
         browser.element(by.id('firstName')).should(be.blank).type(first_name)
         return self
 
-    def type_last_name(self, last_name: str) -> PracticeForm:
+    def _type_last_name(self, last_name: str) -> PracticeForm:
         """
         Заполняет поле Name -> Last Name.
         """
         browser.element(by.id('lastName')).should(be.blank).type(last_name)
         return self
 
-    def type_email(self, email: str) -> PracticeForm:
+    def _type_email(self, email: str) -> PracticeForm:
         """
         Заполняет поле Email.
         """
         browser.element(by.id('userEmail')).should(be.blank).type(email)
         return self
 
-    def click_gender(self, gender: str) -> PracticeForm:
+    def _click_gender(self, gender: str) -> PracticeForm:
         """
         Кликает на радио кнопку выбора пола Gender.
         """
         browser.element(by.id('genterWrapper')).element(by.xpath(f'//label[text() = "{gender}"]')).click()
         return self
 
-    def type_mobile(self, phone: str) -> PracticeForm:
+    def _type_mobile(self, phone: str) -> PracticeForm:
         """
         Заполняет поле Mobile.
         """
         browser.element(by.id('userNumber')).should(be.blank).type(phone)
         return self
 
-    def set_date_of_birth(self, day: str, month: str, year: str) -> PracticeForm:
+    def _set_date_of_birth(self, day_of_birth: datetime.date) -> PracticeForm:
         """
         Заполняет день, месяц и год у поля Date of Birth.
         """
         browser.element(by.id('dateOfBirthInput')).click()
-        browser.element('.react-datepicker__month-select').click().element(by.text(month)).click()
-        browser.element('.react-datepicker__year-select').click().element(by.text(year)).click()
+        browser.element('.react-datepicker__month-select').click()\
+            .element(by.xpath(f'./option[@value = "{day_of_birth.month - 1}"]')).click()
+        browser.element('.react-datepicker__year-select').click()\
+            .element(by.xpath(f'./option[@value = "{day_of_birth.year}"]')).click()
         browser.element(by.xpath(
             f'//div[contains(@class, "react-datepicker__day") '
-            f'and text() = "{int(day):01d}"]'
+            f'and text() = "{day_of_birth.day:01d}"]'
         )).click()
         return self
 
-    def type_subjects(self, subjects_list: Tuple[str]) -> PracticeForm:
+    def _type_subjects(self, subjects_list: Tuple[str, ...]) -> PracticeForm:
         """
         Заполняет поле Subjects.
         """
@@ -70,16 +94,15 @@ class PracticeForm:
             browser.element(by.id('subjectsInput')).type(subject).press_tab()
         return self
 
-    def type_hobbies(self, hobbies_list: Tuple[str]) -> PracticeForm:
+    def _type_hobbies(self, hobbies_list: Tuple[Hobbies, ...]) -> PracticeForm:
         """
         Заполняет поле Subjects.
         """
-        # 'Sports', 'Reading', 'Music'
         for hobby in hobbies_list:
             browser.element(by.xpath(f'//label[text() = "{hobby}"]')).click()
         return self
 
-    def select_picture(self, picture_name: str) -> PracticeForm:
+    def _select_picture(self, picture_name: str) -> PracticeForm:
         """
         Заполняет поле Picture.
         """
@@ -92,14 +115,14 @@ class PracticeForm:
         else:
             raise ValueError(f'{user_picture_path} отсутствует')
 
-    def type_address(self, address: str) -> PracticeForm:
+    def _type_address(self, address: str) -> PracticeForm:
         """
         Заполняет поле Current Address.
         """
         browser.element(by.id('currentAddress')).should(be.blank).type(address)
         return self
 
-    def select_state_and_city(self, state: str, city: str) -> PracticeForm:
+    def _select_state_and_city(self, state: str, city: str) -> PracticeForm:
         """
         Заполняет поля State и City.
         """
@@ -107,38 +130,25 @@ class PracticeForm:
         browser.element(by.xpath('//div[@id = "city"]//input')).send_keys(city).press_tab()
         return self
 
-    def submit(self) -> PracticeForm:
+    def _submit(self) -> PracticeForm:
         browser.element(by.id('submit')).click()
         return self
 
-    def should_have_registered(
-            self,
-            first_name: str,
-            last_name: str,
-            email: str,
-            gender: str,
-            phone: str,
-            day_of_birth: str,
-            month_of_birth: str,
-            year_of_birth: str,
-            subjects_list: Tuple[str],
-            hobbies_list: Tuple[str],
-            picture_name: str,
-            address: str,
-            state: str,
-            city: str
-    ) -> None:
+    def should_have_registered(self, user: User) -> None:
+        """
+        Проверяет заполнение таблицы зарегистрированного пользователя.
+        """
         browser.element('.table').all('td').even.should(
             have.exact_texts(
-                f'{first_name} {last_name}',
-                email,
-                gender,
-                phone,
-                f'{day_of_birth} {month_of_birth},{year_of_birth}',
-                ', '.join(subjects_list),
-                ', '.join(hobbies_list),
-                picture_name,
-                address,
-                f'{state} {city}'
+                f'{user.first_name} {user.last_name}',
+                user.email,
+                user.gender,
+                user.phone,
+                f'{user.date_of_birth.strftime("%d %B,%Y")}',
+                ', '.join(user.subjects_list),
+                ', '.join(user.hobbies_list),  # на этот ворнинг я забил
+                user.picture_name,
+                user.address,
+                f'{user.state} {user.city}'
             )
         )
