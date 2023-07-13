@@ -1,11 +1,8 @@
 from __future__ import annotations
-
-import datetime
 import os
+from datetime import date
 from typing import Tuple
-
 from selene import browser, by, have, be
-
 from qaguru.user import User, Hobbies
 
 
@@ -71,7 +68,7 @@ class PracticeForm:
         browser.element(by.id('userNumber')).should(be.blank).type(phone)
         return self
 
-    def _set_date_of_birth(self, day_of_birth: datetime.date) -> PracticeForm:
+    def _set_date_of_birth(self, day_of_birth: date) -> PracticeForm:
         """
         Заполняет день, месяц и год у поля Date of Birth.
         """
@@ -134,7 +131,8 @@ class PracticeForm:
         browser.element(by.id('submit')).click()
         return self
 
-    def should_have_registered(self, user: User) -> None:
+    @staticmethod
+    def should_have_registered(user: User) -> None:
         """
         Проверяет заполнение таблицы зарегистрированного пользователя.
         """
