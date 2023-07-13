@@ -1,7 +1,6 @@
 from __future__ import annotations
 import os
 from typing import Tuple
-
 from selene import browser, by, have, be
 
 
@@ -111,8 +110,8 @@ class PracticeForm:
         browser.element(by.id('submit')).click()
         return self
 
+    @staticmethod
     def should_have_registered(
-            self,
             first_name: str,
             last_name: str,
             email: str,
