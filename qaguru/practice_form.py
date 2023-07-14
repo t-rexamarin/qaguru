@@ -3,6 +3,8 @@ import os
 from typing import Tuple
 from selene import browser, by, have, be
 
+from conf import ROOT_DIR
+
 
 class PracticeForm:
     def open(self) -> PracticeForm:
@@ -83,7 +85,7 @@ class PracticeForm:
         Заполняет поле Picture.
         """
         static_path = 'static'
-        user_picture_path = os.path.join(os.getcwd(), static_path, picture_name)
+        user_picture_path = os.path.join(ROOT_DIR, static_path, picture_name)
         file_exists = os.path.exists(user_picture_path)
         if file_exists:
             browser.element(by.id('uploadPicture')).send_keys(user_picture_path)
