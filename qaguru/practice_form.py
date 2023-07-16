@@ -18,6 +18,8 @@ class PracticeForm:
         """
         self.browser.open('https://demoqa.com/automation-practice-form')
         self.browser.element(by.class_name('main-header')).should(have.text('Practice Form'))
+        self.browser.driver.execute_script("$('footer').remove()")
+        self.browser.driver.execute_script("$('#fixedban').remove()")
         return self
 
     def register(self, user: User) -> PracticeForm:
