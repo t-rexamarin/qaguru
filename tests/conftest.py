@@ -18,7 +18,6 @@ def load_env():
 
 @pytest.fixture(scope='function', autouse=True)
 def browser_setup() -> Browser:
-    # browser.driver.maximize_window()
     browser_version = os.getenv(constants.BROWSER_VERSION)
     options = Options()
     selenoid_capabilities = {

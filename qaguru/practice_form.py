@@ -2,19 +2,22 @@ from __future__ import annotations
 import os
 from datetime import date
 from typing import Tuple
-from selene import browser, by, have, be
+from selene import by, have, be
 from qaguru.user import User, Hobbies
 
 from conf import ROOT_DIR
 
 
 class PracticeForm:
+    def __init__(self, browser):
+        self.browser = browser
+
     def open(self) -> PracticeForm:
         """
         Открывает страницу с тестовой формой.
         """
-        browser.open('https://demoqa.com/automation-practice-form')
-        browser.element(by.class_name('main-header')).should(have.text('Practice Form'))
+        self.browser.open('https://demoqa.com/automation-practice-form')
+        self.browser.element(by.class_name('main-header')).should(have.text('Practice Form'))
         return self
 
     def register(self, user: User) -> PracticeForm:
@@ -39,47 +42,47 @@ class PracticeForm:
         """
         Заполняет поле Name -> First Name.
         """
-        browser.element(by.id('firstName')).should(be.blank).type(first_name)
+        self.browser.element(by.id('firstName')).should(be.blank).type(first_name)
         return self
 
     def _type_last_name(self, last_name: str) -> PracticeForm:
         """
         Заполняет поле Name -> Last Name.
         """
-        browser.element(by.id('lastName')).should(be.blank).type(last_name)
+        self.browser.element(by.id('lastName')).should(be.blank).type(last_name)
         return self
 
     def _type_email(self, email: str) -> PracticeForm:
         """
         Заполняет поле Email.
         """
-        browser.element(by.id('userEmail')).should(be.blank).type(email)
+        self.browser.element(by.id('userEmail')).should(be.blank).type(email)
         return self
 
     def _click_gender(self, gender: str) -> PracticeForm:
         """
         Кликает на радио кнопку выбора пола Gender.
         """
-        browser.element(by.id('genterWrapper')).element(by.xpath(f'//label[text() = "{gender}"]')).click()
+        self.browser.element(by.id('genterWrapper')).element(by.xpath(f'//label[text() = "{gender}"]')).click()
         return self
 
     def _type_mobile(self, phone: str) -> PracticeForm:
         """
         Заполняет поле Mobile.
         """
-        browser.element(by.id('userNumber')).should(be.blank).type(phone)
+        self.browser.element(by.id('userNumber')).should(be.blank).type(phone)
         return self
 
     def _set_date_of_birth(self, day_of_birth: date) -> PracticeForm:
         """
         Заполняет день, месяц и год у поля Date of Birth.
         """
-        browser.element(by.id('dateOfBirthInput')).click()
-        browser.element('.react-datepicker__month-select').click()\
+        self.browser.element(by.id('dateOfBirthInput')).click()
+        self.browser.element('.react-datepicker__month-select').click()\
             .element(by.xpath(f'./option[@value = "{day_of_birth.month - 1}"]')).click()
-        browser.element('.react-datepicker__year-select').click()\
+        self.browser.element('.react-datepicker__year-select').click()\
             .element(by.xpath(f'./option[@value = "{day_of_birth.year}"]')).click()
-        browser.element(by.xpath(
+        self.browser.element(by.xpath(
             f'//div[contains(@class, "react-datepicker__day") '
             f'and text() = "{day_of_birth.day:01d}"]'
         )).click()
@@ -90,7 +93,7 @@ class PracticeForm:
         Заполняет поле Subjects.
         """
         for subject in subjects_list:
-            browser.element(by.id('subjectsInput')).type(subject).press_tab()
+            self.browser.element(by.id('subjectsInput')).type(subject).press_tab()
         return self
 
     def _type_hobbies(self, hobbies_list: Tuple[Hobbies, ...]) -> PracticeForm:
@@ -98,7 +101,7 @@ class PracticeForm:
         Заполняет поле Subjects.
         """
         for hobby in hobbies_list:
-            browser.element(by.xpath(f'//label[text() = "{hobby}"]')).click()
+            self.browser.element(by.xpath(f'//label[text() = "{hobby}"]')).click()
         return self
 
     def _select_picture(self, picture_name: str) -> PracticeForm:
@@ -109,7 +112,7 @@ class PracticeForm:
         user_picture_path = os.path.join(ROOT_DIR, static_path, picture_name)
         file_exists = os.path.exists(user_picture_path)
         if file_exists:
-            browser.element(by.id('uploadPicture')).send_keys(user_picture_path)
+            self.browser.element(by.id('uploadPicture')).send_keys(user_picture_path)
             return self
         else:
             raise ValueError(f'{user_picture_path} отсутствует')
@@ -118,19 +121,19 @@ class PracticeForm:
         """
         Заполняет поле Current Address.
         """
-        browser.element(by.id('currentAddress')).should(be.blank).type(address)
+        self.browser.element(by.id('currentAddress')).should(be.blank).type(address)
         return self
 
     def _select_state_and_city(self, state: str, city: str) -> PracticeForm:
         """
         Заполняет поля State и City.
         """
-        browser.element(by.xpath('//div[@id = "state"]//input')).send_keys(state).press_tab()
-        browser.element(by.xpath('//div[@id = "city"]//input')).send_keys(city).press_tab()
+        self.browser.element(by.xpath('//div[@id = "state"]//input')).send_keys(state).press_tab()
+        self.browser.element(by.xpath('//div[@id = "city"]//input')).send_keys(city).press_tab()
         return self
 
     def _submit(self) -> PracticeForm:
-        browser.element(by.id('submit')).click()
+        self.browser.element(by.id('submit')).click()
         return self
 
     @staticmethod
@@ -138,7 +141,7 @@ class PracticeForm:
         """
         Проверяет заполнение таблицы зарегистрированного пользователя.
         """
-        browser.element('.table').all('td').even.should(
+        self.browser.element('.table').all('td').even.should(
             have.exact_texts(
                 f'{user.first_name} {user.last_name}',
                 user.email,
