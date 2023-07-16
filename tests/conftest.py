@@ -18,6 +18,7 @@ def load_env():
 
 @pytest.fixture(scope='function', autouse=True)
 def browser_setup() -> Browser:
+    # browser.driver.maximize_window()
     browser_version = os.getenv(constants.BROWSER_VERSION)
     options = Options()
     selenoid_capabilities = {
@@ -36,8 +37,8 @@ def browser_setup() -> Browser:
         command_executor=f"https://{login}:{password}@selenoid.autotests.cloud/wd/hub",
         options=options
     )
-    driver.maximize_window()
-    browser = Browser(Config(driver))
+    browser = Browser(Config(driver=driver))
+    # browser.driver.maximize_window()
     yield browser
     attach.add_html(browser)
     attach.add_screenshot(browser)
