@@ -57,7 +57,7 @@ def user_data():
         date_of_birth=datetime.date(year=1991, month=3, day=7),
         subjects_list=('Arts', 'History', 'Biology'),
         hobbies_list=(Hobbies.SPORT.value, Hobbies.READING.value, Hobbies.MUSIC.value),
-        picture_name='Гигачад.jpg',
+        picture_name='gigachad.jpg',
         address='Тестовая улица 1',
         state='NCR',
         city='Delhi'
