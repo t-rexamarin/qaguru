@@ -136,8 +136,7 @@ class PracticeForm:
         self.browser.element(by.id('submit')).click()
         return self
 
-    @staticmethod
-    def should_have_registered(user: User) -> None:
+    def should_have_registered(self, user: User) -> None:
         """
         Проверяет заполнение таблицы зарегистрированного пользователя.
         """
