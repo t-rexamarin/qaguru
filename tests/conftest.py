@@ -36,8 +36,8 @@ def browser_setup() -> Browser:
         command_executor=f"https://{login}:{password}@selenoid.autotests.cloud/wd/hub",
         options=options
     )
+    driver.maximize_window()
     browser = Browser(Config(driver=driver))
-    # browser.driver.maximize_window()
     yield browser
     attach.add_html(browser)
     attach.add_screenshot(browser)
