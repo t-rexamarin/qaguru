@@ -1,21 +1,28 @@
 import allure
 import pytest
-from allure_commons.types import Severity
+
+from selene import Browser
 from selene.support import by
-from selene.support.conditions import be
 from selene.support.shared import browser
 from selene.support.shared.jquery_style import s
 
 
-@pytest.mark.parametrize(
-    'driver',
-    [
-        'desktop'
-        # (1920, 1080)
-    ],
-    indirect=True
-)
+mobile = pytest.mark.parametrize('driver', [(412, 915), (390, 844)], ids=['412x915', '390x844'], indirect=True)
+desktop = pytest.mark.parametrize('driver', [(1280, 1024), (1920, 1080)], ids=['1280x1024', '1920x1080'], indirect=True)
+
+
+def is_desktop(driver: Browser):
+    return driver.config.window_width > 1000
+
+
+@desktop
+# @mobile
 def test_github_sign_in_desktop(driver):
+    if not is_desktop(driver=driver):
+        pytest.skip()
+
+    pytest.mark.skipif(not is_desktop(driver))
+
     step_value = 'https://github.com'
     with allure.step(f"Открываем главную страницу {step_value}"):
         browser.open(step_value)
@@ -29,16 +36,12 @@ def test_github_sign_in_desktop(driver):
         s(by.text(step_value))
 
 
-
-@pytest.mark.parametrize(
-    'driver',
-    [
-        'mobile'
-        # (1920, 1080)
-    ],
-    indirect=True
-)
+@mobile
+# @desktop
 def test_github_sign_in_mobile(driver):
+    if is_desktop(driver=driver):
+        pytest.skip()
+
     step_value = 'https://github.com'
     with allure.step(f"Открываем главную страницу {step_value}"):
         browser.open(step_value)
