@@ -1,1 +1,4 @@
-selene>=2.0.0b4
+requests
+jsonschema
+python-dateutil
+allure-pytest
