@@ -1,56 +1,11 @@
-import json
+from requests import Response
 
-from jsonschema.validators import validate
-from requests import get, post, put, delete, Response
+from utilities.base_api import BaseApi
 
 
-class ReqresApi:
-    url: str
-
+class ReqresApi(BaseApi):
     def __init__(self):
         self.url = 'https://reqres.in/'
-
-    def _get_to_reqres(self, path: str) -> Response:
-        """
-        Send get request.
-        """
-        url = self.url + path
-        request = get(url=url)
-        return request
-
-    def _post_to_reqres(self, path: str, payload: dict) -> Response:
-        """
-        Send post request.
-        """
-        url = self.url + path
-        request = post(url=url, json=payload)
-        return request
-
-    def _put_to_reqres(self, path: str, payload: dict) -> Response:
-        """
-        Send put request.
-        """
-        url = self.url + path
-        request = put(url=url, json=payload)
-        return request
-
-    def _delete_to_reqres(self, path: str) -> Response:
-        """
-        Send delete request.
-        """
-        url = self.url + path
-        request = delete(url=url)
-        return request
-
-    @staticmethod
-    def validate_scheme(response: Response, schema: dict) -> dict:
-        """
-        Validate response scheme.
-        Response dictionary returns.
-        """
-        response_obj = json.loads(response.text)
-        validate(instance=response_obj, schema=schema)
-        return response_obj
 
     def get_list_users(self, page: int = None) -> Response:
         """
@@ -59,7 +14,7 @@ class ReqresApi:
         path = 'api/users'
         if page:
             path += f'?page={page}'
-        request = self._get_to_reqres(path=path)
+        request = self._send_request(method='get', path=path)
         return request
 
     def get_single_user(self, user_id: int = 1) -> Response:
@@ -68,7 +23,7 @@ class ReqresApi:
         user_id = 1 by default.
         """
         path = f'api/users/{user_id}'
-        request = self._get_to_reqres(path=path)
+        request = self._send_request(method='get', path=path)
         return request
 
     def get_list_resource(self) -> Response:
@@ -76,7 +31,7 @@ class ReqresApi:
         Get api/unknown.
         """
         path = 'api/unknown'
-        request = self._get_to_reqres(path=path)
+        request = self._send_request(method='get', path=path)
         return request
 
     def get_single_resource(self, resource_id: int) -> Response:
@@ -84,7 +39,7 @@ class ReqresApi:
         Get api/unknown{resource_id}.
         """
         path = f'api/unknown/{resource_id}'
-        request = self._get_to_reqres(path=path)
+        request = self._send_request(method='get', path=path)
         return request
 
     def post_create(self, payload: dict) -> Response:
@@ -92,7 +47,7 @@ class ReqresApi:
         Post api/users.
         """
         path = 'api/users'
-        request = self._post_to_reqres(path=path, payload=payload)
+        request = self._send_request(method='post', path=path, data=payload)
         return request
 
     def put_create(self, user_id: int, payload: dict) -> Response:
@@ -100,7 +55,7 @@ class ReqresApi:
         Put api/users{user_id}.
         """
         path = f'api/users/{user_id}'
-        request = self._put_to_reqres(path=path, payload=payload)
+        request = self._send_request(method='post', path=path, data=payload)
         return request
 
     def delete_user(self, user_id: int):
@@ -108,7 +63,7 @@ class ReqresApi:
         Delete api/users/{user_id}.
         """
         path = f'api/users/{user_id}'
-        request = self._delete_to_reqres(path=path)
+        request = self._send_request(method='delete', path=path)
         return request
 
     def post_register(self, payload: dict) -> Response:
@@ -116,7 +71,7 @@ class ReqresApi:
         Post api/register.
         """
         path = 'api/register'
-        request = self._post_to_reqres(path=path, payload=payload)
+        request = self._send_request(method='post', path=path, data=payload)
         return request
 
     def post_login(self, payload: dict) -> Response:
@@ -124,5 +79,5 @@ class ReqresApi:
         Post api/login.
         """
         path = 'api/login'
-        request = self._post_to_reqres(path=path, payload=payload)
+        request = self._send_request(method='post', path=path, data=payload)
         return request
