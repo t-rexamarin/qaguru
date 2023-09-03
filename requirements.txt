@@ -1,5 +1,5 @@
 requests
 jsonschema
-python-dateutil
 allure-pytest
 pytest
+curlify
