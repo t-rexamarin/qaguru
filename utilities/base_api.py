@@ -35,15 +35,32 @@ class BaseApi:
                     extension='txt'
                 )
 
-                try:
-                    json_response = response.json()
-                except JSONDecodeError:
-                    json_response = {}
+                if response.content:
+                    response_header = response.headers.get('Content-Type').split(';')[0]
+                    if response_header == 'text/html':
+                        response_content = response.text
+                        attachment_type = AttachmentType.TEXT
+                        extension = 'txt'
+                    elif response_header == 'application/json':
+                        response_content = json.dumps(response.json(), indent=4).encode('utf-8')
+                        attachment_type = AttachmentType.JSON
+                        extension = 'json'
+                    else:
+                        raise Exception(f'Unexpected Content-Type - response_header')
+                else:
+                    response_content = ''
+                    attachment_type = AttachmentType.TEXT
+                    extension = 'txt'
+
+                # try:
+                #     json_response = response.json()
+                # except JSONDecodeError:
+                #     json_response = {}
 
                 allure.attach(
-                    body=json.dumps(json_response, indent=4).encode('utf-8'),
-                    name='Response json',
-                    attachment_type=AttachmentType.JSON,
-                    extension='json'
+                    body=response_content,
+                    name='Response',
+                    attachment_type=attachment_type,
+                    extension=extension
                 )
         return response
