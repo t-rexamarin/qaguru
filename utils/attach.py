@@ -11,8 +11,7 @@ def add_video(browser):
         f'https://api.browserstack.com/app-automate/sessions/{browser.driver.session_id}.json',
         auth=HTTPBasicAuth(username=project.config.bstack_userName, password=project.config.bstack_accessKey)
     )
-    video = request['automation_session']['video_url']
-    # video_url = "https://selenoid.autotests.cloud/video/" + browser.driver.session_id + ".mp4"
+    video = request.json()['automation_session']['video_url']
     html = "<html><body><video width='100%' height='100%' controls autoplay><source src='" \
            + video \
            + "' type='video/mp4'></video></body></html>"
