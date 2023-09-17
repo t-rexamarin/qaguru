@@ -4,8 +4,8 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selene import browser, have
 
 
-@pytest.mark.bstack_ios
-def test_search():
+@pytest.mark.ios
+def test_search(ios_driver):
     with step('Нажимаем кнопку Text'):
         browser.element((AppiumBy.ACCESSIBILITY_ID, "Text Button")).click()
 

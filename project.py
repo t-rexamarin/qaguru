@@ -1,67 +1,68 @@
-import os
-from enum import Enum
-
 import dotenv
-import pydantic
 from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
 from pydantic.v1 import BaseSettings
-from selene import browser, Browser
-
-
-class Context(Enum):
-    bstack_android = 'bstack_android'
-    bstack_ios = 'bstack_ios'
 
 
 class Config(BaseSettings):
-    bstack_accessKey: str = os.getenv('BSTACK_USERNAME')
-    bstack_userName: str = os.getenv('BSTACK_ACCESSKEY')
-    context: Context = os.getenv('CONTEXT')
-    driver_remote_url: str = os.getenv('DRIVER_REMOTE_URL')
-    app_package: str = os.getenv('APP_PACKAGE')
-    project_name: str = os.getenv('PROJECT_NAME')
-    build_name: str = os.getenv('BUILD_NAME')
-    device_name: str = os.getenv('DEVICE_NAME')
+    bstack_accessKey: str
+    bstack_userName: str
+    driver_remote_url: str
+    session_name: str
 
+    android_app_package: str
+    android_project_name: str
+    android_build_name: str
+    android_device_name: str
+    android_platform_version: str
 
-    @property
-    def bstack_options(self):
+    ios_app_package: str
+    ios_project_name: str
+    ios_build_name: str
+    ios_device_name: str
+    ios_platform_version: str
+
+    def bstack_creds(self) -> dict:
         return {
-            'app': self.app_package,
-            'bstack:options': {
-                'userName': self.bstack_userName,
-                'accessKey': self.bstack_accessKey,
-                'projectName': self.project_name,
-                'buildName': self.build_name,
-                'sessionName': f'{self.context} test',
-                'deviceName': self.device_name
-            }
+            "userName": self.bstack_userName,
+            "accessKey": self.bstack_accessKey,
+            "networkLogs": True
         }
 
-    def android_browserstack_options(self) -> Browser:
-        options = UiAutomator2Options()
-        options.load_capabilities(
-            {
-                **self.bstack_options
-            },
-        )
-        browser.config.driver_options = options
-        browser.config.driver_remote_url = self.driver_remote_url
+    def android_browserstack_options(self) -> UiAutomator2Options:
+        options = UiAutomator2Options().load_capabilities({
+            "platformVersion": self.android_platform_version,
+            "deviceName": self.android_device_name,
+            "app": self.android_app_package,
 
-        return browser
+            'bstack:options': {
+                "projectName": self.android_project_name,
+                "buildName": self.android_build_name,
+                "sessionName": self.session_name,
+                **self.bstack_creds()
+            }
+        })
 
-    def ios_browserstack_options(self) -> Browser:
+        return options
+
+    def ios_browserstack_options(self) -> XCUITestOptions:
         options = XCUITestOptions()
         options.load_capabilities(
             {
-                **self.bstack_options,
-            },
+                "platformVersion": self.ios_platform_version,
+                "deviceName": self.ios_device_name,
+                "app": self.ios_app_package,
+
+                'bstack:options': {
+                    "projectName": self.ios_project_name,
+                    "buildName": self.ios_build_name,
+                    "sessionName": self.session_name,
+                    **self.bstack_creds()
+                }
+            }
         )
-        browser.config.driver_options = options
-        browser.config.driver_remote_url = self.driver_remote_url
 
-        return browser
+        return options
 
 
-config = Config(dotenv.find_dotenv())
+config = Config(_env_file=dotenv.find_dotenv(), _env_file_encoding='utf-8')
